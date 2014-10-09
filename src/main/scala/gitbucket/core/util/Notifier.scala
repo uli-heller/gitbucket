@@ -29,7 +29,7 @@ trait Notifier extends RepositoryService with AccountService with IssuesService 
         getComments(issue.userName, issue.repositoryName, issue.issueId).map(_.commentedUserName)
     )
     .distinct
-    .withFilter ( _ != context.loginAccount.get.userName )  // the operation in person is excluded
+    //.withFilter ( _ != context.loginAccount.get.userName )	// the operation in person is excluded
     .foreach ( getAccountByUserName(_) filterNot (_.isGroupAccount) filterNot (LDAPUtil.isDummyMailAddress(_)) foreach (x => notify(x.mailAddress)) )
 
 }

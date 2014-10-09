@@ -177,6 +177,10 @@ Release Notes
 - Task list in Markdown
 - Some bug fix and improvements
 
+### 2.4.1u2 - 9 Oct 2014
+- Send mails to person in action, too
+
+
 ### 2.4.1 - 6 Oct 2014
 - Bug fix
 
