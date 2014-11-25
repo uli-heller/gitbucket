@@ -1,0 +1,102 @@
+diff --git a/src/main/scala/app/IssuesController.scala b/src/main/scala/app/IssuesController.scala
+index d2bb683..b904e4c 100644
+--- a/src/main/scala/app/IssuesController.scala
++++ b/src/main/scala/app/IssuesController.scala
+@@ -112,7 +112,7 @@ trait IssuesControllerBase extends ControllerBase {
+ 
+       // notifications
+       Notifier().toNotify(repository, issueId, form.content.getOrElse("")){
+-        Notifier.msgIssue(s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
++        Notifier.msgIssue(userName, s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
+       }
+ 
+       redirect(s"/${owner}/${name}/issues/${issueId}")
+@@ -367,13 +367,13 @@ trait IssuesControllerBase extends ControllerBase {
+           case f =>
+             content foreach {
+               f.toNotify(repository, issueId, _){
+-                Notifier.msgComment(s"${context.baseUrl}/${owner}/${name}/${
++                Notifier.msgComment(userName, s"${context.baseUrl}/${owner}/${name}/${
+                   if(issue.isPullRequest) "pull" else "issues"}/${issueId}#comment-${commentId}")
+               }
+             }
+             action foreach {
+               f.toNotify(repository, issueId, _){
+-                Notifier.msgStatus(s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
++                Notifier.msgStatus(userName, s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
+               }
+             }
+         }
+diff --git a/src/main/scala/app/PullRequestsController.scala b/src/main/scala/app/PullRequestsController.scala
+index c079f01..d0dd33f 100644
+--- a/src/main/scala/app/PullRequestsController.scala
++++ b/src/main/scala/app/PullRequestsController.scala
+@@ -196,7 +196,7 @@ trait PullRequestsControllerBase extends ControllerBase {
+ 
+             // notifications
+             Notifier().toNotify(repository, issueId, "merge"){
+-              Notifier.msgStatus(s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
++              Notifier.msgStatus(loginAccount.userName, s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
+             }
+ 
+             redirect(s"/${owner}/${name}/pull/${issueId}")
+@@ -351,7 +351,7 @@ trait PullRequestsControllerBase extends ControllerBase {
+ 
+     // notifications
+     Notifier().toNotify(repository, issueId, form.content.getOrElse("")){
+-      Notifier.msgPullRequest(s"${context.baseUrl}/${repository.owner}/${repository.name}/pull/${issueId}")
++      Notifier.msgPullRequest(loginUserName, s"${context.baseUrl}/${repository.owner}/${repository.name}/pull/${issueId}")
+     }
+ 
+     redirect(s"/${repository.owner}/${repository.name}/pull/${issueId}")
+diff --git a/src/main/scala/util/Notifier.scala b/src/main/scala/util/Notifier.scala
+index 95ec6bf..77426de 100644
+--- a/src/main/scala/util/Notifier.scala
++++ b/src/main/scala/util/Notifier.scala
+@@ -39,26 +39,33 @@ object Notifier {
+     case _ => new MockMailer
+   }
+ 
+-  def msgIssue(url: String) = (content: String) => s"""
++  def msgIssue(author: String, url: String) = (content: String) => s"""
++    |${author} just wrote: <br/>
+     |${content}<br/>
+     |--<br/>
+     |<a href="${url}">View it on GitBucket</a>
+     """.stripMargin
+ 
+-  def msgPullRequest(url: String) = (content: String) => s"""
+-    |${content}<hr/>
++  def msgPullRequest(author: String, url: String) = (content: String) => s"""
++    |${author} just sent a Pull Request:</br>
++    |${content}<br/>
++    |--<br/>
+     |View, comment on, or merge it at:<br/>
+     |<a href="${url}">${url}</a>
+     """.stripMargin
+ 
+-  def msgComment(url: String) = (content: String) => s"""
++  def msgComment(author: String, url: String) = (content: String) => s"""
++    |${author} just wrote:<br/>
+     |${content}<br/>
+     |--<br/>
+     |<a href="${url}">View it on GitBucket</a>
+     """.stripMargin
+ 
+-  def msgStatus(url: String) = (content: String) => s"""
+-    |${content} <a href="${url}">#${url split('/') last}</a>
++  def msgStatus(author: String, url: String) = (content: String) => s"""
++    |${author} just changed the status to:<br/>
++    |${content}<br/>
++    |--<br/>
++    |<a href="${url}">View it on GitBucket</a>
+     """.stripMargin
+ }
+ 
+@@ -113,4 +120,4 @@ class Mailer(private val smtp: Smtp) extends Notifier {
+ class MockMailer extends Notifier {
+   def toNotify(r: RepositoryService.RepositoryInfo, issueId: Int, content: String)
+       (msg: String => String)(implicit context: Context): Unit = {}
+-}
+\ No newline at end of file
++}
