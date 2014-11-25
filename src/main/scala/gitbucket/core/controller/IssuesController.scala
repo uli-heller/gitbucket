@@ -135,7 +135,7 @@ trait IssuesControllerBase extends ControllerBase {
 
         // notifications
         Notifier().toNotify(repository, issue, form.content.getOrElse("")){
-          Notifier.msgIssue(s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
+          Notifier.msgIssue(userName, s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
         }
       }
 
@@ -430,13 +430,13 @@ trait IssuesControllerBase extends ControllerBase {
           case f =>
             content foreach {
               f.toNotify(repository, issue, _){
-                Notifier.msgComment(s"${context.baseUrl}/${owner}/${name}/${
+                Notifier.msgComment(userName, s"${context.baseUrl}/${owner}/${name}/${
                   if(issue.isPullRequest) "pull" else "issues"}/${issueId}#comment-${commentId.get}")
               }
             }
             action foreach {
               f.toNotify(repository, issue, _){
-                Notifier.msgStatus(s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
+                Notifier.msgStatus(userName, s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
               }
             }
         }

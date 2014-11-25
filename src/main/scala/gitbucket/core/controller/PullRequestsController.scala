@@ -247,7 +247,7 @@ trait PullRequestsControllerBase extends ControllerBase {
 
             // notifications
             Notifier().toNotify(repository, issue, "merge"){
-              Notifier.msgStatus(s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
+              Notifier.msgStatus(loginAccount.userName, s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
             }
 
             redirect(s"/${owner}/${name}/pull/${issueId}")
@@ -445,7 +445,7 @@ trait PullRequestsControllerBase extends ControllerBase {
 
         // notifications
         Notifier().toNotify(repository, issue, form.content.getOrElse("")){
-          Notifier.msgPullRequest(s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
+          Notifier.msgPullRequest(loginUserName, s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
         }
       }
 
