@@ -95,12 +95,26 @@ Support
 
 Release Notes
 --------
+
+### 3.8u3 - 01 Jul 2015
+- Removed collaborators from notification list
+
+### 3.8u2 - 27 Jun 2015
+- Use '{loginName} {fromAddress}' for the email sender
+- Collect all recipients into the to field
+
+### 3.8u1 - 24 Nov 2014
+- Applied pull request #540 (add current user to notifications)
+- Allow entering of color code
+- Send mails to person in action, too
+
 ### 3.8 - 31 Oct 2015
 - Moved to organization
 - Omit diff view for large differences
 - Repository creation API
 - Render url as link in repository description
 - Expand attachable file types
+
 
 ### 3.7 - 3 Oct 2015
 - Markdown processor has been switched to [markedj](https://github.com/gitbucket/markedj) from pegdown
