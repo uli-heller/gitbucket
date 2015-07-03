@@ -27,6 +27,7 @@ trait Notifier extends RepositoryService with AccountService with IssuesService 
         getCollaborators(issue.userName, issue.repositoryName) :::
         // participants
         issue.openedUserName ::
+        issue.assignedUserName.getOrElse(issue.openedUserName) :: // TODO: find a better solution, maybe have to learn a little bit of scala ;)
         getComments(issue.userName, issue.repositoryName, issue.issueId).map(_.commentedUserName)
     )
     .distinct
