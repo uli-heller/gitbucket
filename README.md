@@ -96,6 +96,9 @@ Support
 Release Notes
 --------
 
+### 3.8u4 - 03 Jul 2015
+- Added assigned person and person in aciton to notification list
+
 ### 3.8u3 - 01 Jul 2015
 - Removed collaborators from notification list
 
