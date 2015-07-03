@@ -20,6 +20,7 @@ trait Notifier extends RepositoryService with AccountService with IssuesService 
 
   protected def recipients(issue: Issue)(notify: String => Unit)(implicit session: Session, context: Context) =
     (
+        context.loginAccount.get.userName :: // the operation in person is added
         // individual repository's owner
         issue.userName ::
         // collaborators
